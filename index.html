@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM History 05 &mdash; OpenAI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0a; --bg-card: #0d1117; --bg-code: #161b22;
+            --text-primary: #e6edf3; --text-secondary: #8b949e;
+            --accent: #A371F7; --accent-dim: #A371F744; --accent-glow: #A371F733;
+            --accent-2: #FF7B72; --accent-3: #F0A726; --accent-4: #3FB950;
+            --border: #21262d;
+            --font-display: 'Space Grotesk', sans-serif;
+            --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+            --font-body: 'Inter', sans-serif;
+            --max-width: 900px;
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body { background: var(--bg-primary); color: var(--text-primary); font-family: var(--font-body); font-size: 17px; line-height: 1.7; overflow-x: hidden; }
+        .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 2rem 1.5rem; text-align: center; position: relative; }
+        .hero::before { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 700px; height: 600px; background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%); pointer-events: none; z-index: 0; }
+        .hero > * { position: relative; z-index: 1; }
+        .series-label { font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 1rem; }
+        .hero h1 { font-family: var(--font-display); font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 700; color: var(--text-primary); line-height: 1.2; margin-bottom: 1rem; }
+        .hero h1 .accent { color: var(--accent); }
+        .hero .subtitle { font-size: 1.1rem; color: var(--text-secondary); max-width: 640px; margin-bottom: 2rem; }
+        .tags { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin-bottom: 2.5rem; }
+        .tag { font-family: var(--font-mono); font-size: 0.75rem; padding: 0.25rem 0.75rem; border-radius: 999px; border: 1px solid var(--accent); color: var(--accent); background: var(--accent-dim); white-space: nowrap; }
+        .tag.r { border-color: var(--accent-2); color: var(--accent-2); background: rgba(255,123,114,0.10); }
+        .tag.y { border-color: var(--accent-3); color: var(--accent-3); background: rgba(240,167,38,0.10); }
+        .tag.g { border-color: var(--accent-4); color: var(--accent-4); background: rgba(63,185,80,0.10); }
+        .pipeline { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.25rem; margin-bottom: 1rem; max-width: var(--max-width); }
+        .pipeline-step { font-family: var(--font-mono); font-size: 0.7rem; padding: 0.3rem 0.7rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 4px; color: var(--text-secondary); white-space: nowrap; }
+        .pipeline-arrow { color: var(--accent); font-size: 0.9rem; font-weight: 700; }
+        .slide { min-height: 100vh; max-width: var(--max-width); margin: 0 auto; padding: 4rem 1.5rem; position: relative; display: flex; flex-direction: column; justify-content: center; }
+        .slide-number { font-family: var(--font-display); font-size: 5rem; font-weight: 700; color: var(--accent-dim); position: absolute; top: 2rem; right: 1.5rem; line-height: 1; user-select: none; }
+        .slide h2 { font-family: var(--font-display); font-size: 1.9rem; font-weight: 700; color: var(--accent); margin-bottom: 1.5rem; line-height: 1.25; }
+        .slide h3 { font-family: var(--font-display); font-size: 1.3rem; font-weight: 600; color: var(--text-primary); margin-top: 1.5rem; margin-bottom: 0.75rem; }
+        .slide p { margin-bottom: 1rem; color: var(--text-secondary); }
+        .slide p strong { color: var(--text-primary); }
+        .slide ul, .slide ol { margin-bottom: 1rem; padding-left: 1.5rem; color: var(--text-secondary); }
+        .slide li { margin-bottom: 0.4rem; }
+        .slide li strong { color: var(--text-primary); }
+        .slide code { font-family: var(--font-mono); font-size: 0.88em; background: var(--bg-code); padding: 0.1rem 0.35rem; border-radius: 3px; color: var(--accent); }
+        .table-wrap { overflow-x: auto; margin: 1.25rem 0; border-radius: 8px; border: 1px solid var(--border); }
+        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        th { background: var(--bg-code); color: var(--accent); font-weight: 600; text-align: left; padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); font-family: var(--font-display); white-space: nowrap; }
+        td { padding: 0.6rem 1rem; border-bottom: 1px solid var(--border); color: var(--text-secondary); }
+        tr:last-child td { border-bottom: none; }
+        tr:nth-child(even) td { background: rgba(13, 17, 23, 0.5); }
+        .diagram-grid { display: grid; gap: 0.75rem; margin: 1.5rem 0; padding: 1.5rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; }
+        .diagram-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+        .diagram-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+        .diagram-panel { padding: 1rem; background: var(--bg-code); border: 1px solid var(--border); border-radius: 6px; }
+        .diagram-panel.accent-border { border-left: 3px solid var(--accent); }
+        .diagram-panel.r { border-left: 3px solid var(--accent-2); }
+        .diagram-panel.y { border-left: 3px solid var(--accent-3); }
+        .diagram-panel.g { border-left: 3px solid var(--accent-4); }
+        .diagram-panel h4 { font-family: var(--font-display); font-size: 1rem; color: var(--accent); margin-bottom: 0.5rem; }
+        .diagram-panel.r h4 { color: var(--accent-2); }
+        .diagram-panel.y h4 { color: var(--accent-3); }
+        .diagram-panel.g h4 { color: var(--accent-4); }
+        .diagram-panel p, .diagram-panel ul { font-size: 0.9rem; }
+        .callout { background: var(--bg-card); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; padding: 1rem 1.25rem; margin: 1.25rem 0; }
+        .callout p { margin-bottom: 0; }
+        .callout .callout-label { font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.3rem; }
+        .callout.r { border-left-color: var(--accent-2); } .callout.r .callout-label { color: var(--accent-2); }
+        .callout.y { border-left-color: var(--accent-3); } .callout.y .callout-label { color: var(--accent-3); }
+        .callout.g { border-left-color: var(--accent-4); } .callout.g .callout-label { color: var(--accent-4); }
+        .quote { font-family: var(--font-display); font-size: 1.15rem; font-style: italic; color: var(--text-primary); padding: 1rem 1.5rem; border-left: 3px solid var(--accent); background: var(--bg-card); margin: 1.25rem 0; border-radius: 0 8px 8px 0; }
+        .quote .attr { display: block; margin-top: 0.5rem; font-style: normal; font-size: 0.85rem; color: var(--text-secondary); font-family: var(--font-mono); }
+        .timeline { display: flex; flex-direction: column; gap: 0.5rem; padding: 1rem 0; }
+        .tl-row { display: flex; gap: 1rem; align-items: flex-start; padding: 0.6rem 0; border-bottom: 1px solid var(--border); }
+        .tl-year { font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent); min-width: 90px; padding-top: 0.1rem; }
+        .tl-event { flex: 1; }
+        .tl-event strong { color: var(--text-primary); }
+        .tl-event p { font-size: 0.9rem; color: var(--text-secondary); margin: 0; }
+        .contents-list { list-style: none; padding-left: 0; counter-reset: contents; }
+        .contents-list li { counter-increment: contents; padding: 0.6rem 0; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 1rem; }
+        .contents-list li:last-child { border-bottom: none; }
+        .contents-list li::before { content: counter(contents, decimal-leading-zero); font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent); min-width: 2rem; }
+        .contents-list a { color: var(--text-primary); text-decoration: none; }
+        .contents-list a:hover { color: var(--accent); }
+        .footer { text-align: center; padding: 3rem 1.5rem; color: var(--text-secondary); font-size: 0.85rem; border-top: 1px solid var(--border); max-width: var(--max-width); margin: 0 auto; }
+        .footer a { color: var(--accent); text-decoration: none; }
+        .footer a:hover { text-decoration: underline; }
+        .person-card { display: grid; grid-template-columns: 90px 1fr; gap: 1rem; padding: 1rem; background: var(--bg-code); border: 1px solid var(--border); border-radius: 6px; margin-bottom: 0.6rem; }
+        .person-photo { width: 90px; height: 90px; border-radius: 50%; background: var(--accent-dim); border: 2px solid var(--accent); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 700; font-size: 1.6rem; color: var(--accent); }
+        .person-card h4 { font-family: var(--font-display); margin-bottom: 0.2rem; color: var(--text-primary); }
+        .person-card .role { font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.4rem; }
+        .person-card p { font-size: 0.88rem; margin: 0; }
+        @media (max-width: 640px) {
+            .slide { padding: 3rem 1rem; min-height: auto; }
+            .slide-number { font-size: 3rem; top: 1.5rem; right: 1rem; }
+            .slide h2 { font-size: 1.5rem; }
+            .diagram-grid.cols-2, .diagram-grid.cols-3 { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 1.8rem; }
+            table { font-size: 0.78rem; }
+            .person-card { grid-template-columns: 60px 1fr; }
+            .person-photo { width: 60px; height: 60px; font-size: 1.1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="hero">
+    <div class="series-label">LLM History Series &mdash; Presentation 05</div>
+    <h1><span class="accent">OpenAI</span> &mdash; The Scaling Bet</h1>
+    <p class="subtitle">Founded as a non-profit in December 2015 by a small group worried about AI safety. Eight years later it had built the dominant frontier model, an ecosystem of API customers, and the most contested governance crisis in the industry's short history. The story of how that happened.</p>
+
+    <div class="tags">
+        <span class="tag">2015&ndash;2026</span>
+        <span class="tag y">Altman</span><span class="tag y">Brockman</span><span class="tag y">Sutskever</span>
+        <span class="tag g">GPT-1&hellip;5</span><span class="tag g">o-series</span><span class="tag r">Nov 2023</span>
+    </div>
+
+    <div class="pipeline">
+        <span class="pipeline-step">Founding (Dec 2015)</span>
+        <span class="pipeline-arrow">&rarr;</span>
+        <span class="pipeline-step">Capped-profit (2019)</span>
+        <span class="pipeline-arrow">&rarr;</span>
+        <span class="pipeline-step">GPT-3 (May 2020)</span>
+        <span class="pipeline-arrow">&rarr;</span>
+        <span class="pipeline-step">ChatGPT (Nov 2022)</span>
+        <span class="pipeline-arrow">&rarr;</span>
+        <span class="pipeline-step">Board crisis (Nov 2023)</span>
+        <span class="pipeline-arrow">&rarr;</span>
+        <span class="pipeline-step">o-series &amp; GPT-5</span>
+    </div>
+</header>
+
+<section class="slide" id="slide-00">
+    <div class="slide-number">00</div>
+    <h2>What This Deck Covers</h2>
+    <p>OpenAI as an organisation, separate from its products. The founding bargain, the path from non-profit to capped-profit, the scaling bet, the November 2023 governance crisis, and the principals as people. The technical content of the GPT line is in the architecture-side decks of the LLMs hub.</p>
+    <ul class="contents-list">
+        <li><a href="#slide-01">The Founding (December 2015)</a></li>
+        <li><a href="#slide-02">The Charter and the Non-Profit Bet</a></li>
+        <li><a href="#slide-03">The 2018 Reorg &mdash; Capped-Profit; Musk Departs</a></li>
+        <li><a href="#slide-04">The Microsoft Bet ($1 B, 2019)</a></li>
+        <li><a href="#slide-05">GPT-1, GPT-2, GPT-3 &mdash; the Scaling Bet Vindicated</a></li>
+        <li><a href="#slide-06">Codex / Copilot and the Enterprise Pivot</a></li>
+        <li><a href="#slide-07">ChatGPT &mdash; the Demo That Broke the Internet</a></li>
+        <li><a href="#slide-08">GPT-4 and the Closing of the Weights</a></li>
+        <li><a href="#slide-09">The November 2023 Board Crisis</a></li>
+        <li><a href="#slide-10">Sora, the o-series, and GPT-5</a></li>
+        <li><a href="#slide-11">The Principals Today</a></li>
+        <li><a href="#slide-12">Cheat Sheet</a></li>
+    </ul>
+</section>
+
+<section class="slide" id="slide-01">
+    <div class="slide-number">01</div>
+    <h2>The Founding (December 2015)</h2>
+    <p>OpenAI was announced on 11 December 2015 by a coalition of <strong>Sam Altman</strong> (then president of Y Combinator), <strong>Greg Brockman</strong> (former CTO of Stripe), <strong>Elon Musk</strong>, <strong>Ilya Sutskever</strong> (then at Google Brain), and a handful of others. The pitch: a non-profit research lab whose mission would be to <em>"advance digital intelligence in the way that is most likely to benefit humanity as a whole, unconstrained by a need to generate financial return"</em>.</p>
+
+    <p>The founding pledge was reportedly $1 B, announced at the time, although in practice less than half of that was actually called in over the next few years. Donors included Musk, Reid Hoffman, Peter Thiel, Jessica Livingston, Y Combinator, Amazon Web Services and Infosys.</p>
+
+    <div class="person-card">
+        <div class="person-photo">SA</div>
+        <div>
+            <h4>Sam Altman</h4>
+            <div class="role">CEO since 2019; previously chair, then president of Y Combinator</div>
+            <p>Stanford CS dropout. Founded the location-app Loopt at 19, sold it for ~$45 M, joined YC, ran it 2014&ndash;2019. Quiet in person, methodical, a famously prolific networker. Not a researcher &mdash; openly so &mdash; and his role at OpenAI is operational, fundraising, and strategic. Has said, repeatedly, that AGI is the most important project of the century, and that the principal risk to manage is concentration of power, not technical misalignment.</p>
+        </div>
+    </div>
+
+    <div class="person-card">
+        <div class="person-photo">GB</div>
+        <div>
+            <h4>Greg Brockman</h4>
+            <div class="role">President; was CTO 2015&ndash;2024</div>
+            <p>Harvard / MIT dropout. Stripe's first-employee CTO. The hands-on engineering lead at OpenAI for most of its history &mdash; the person actually shipping infrastructure, training runs and demos. Took an extended sabbatical in 2024 and returned. Often the most visible technical voice from the lab.</p>
+        </div>
+    </div>
+
+    <div class="person-card">
+        <div class="person-photo">IS</div>
+        <div>
+            <h4>Ilya Sutskever</h4>
+            <div class="role">Co-founder, Chief Scientist 2015&ndash;2024; founded Safe Superintelligence (SSI) 2024</div>
+            <p>Russian-Israeli-Canadian. PhD with Hinton at Toronto. Co-author AlexNet (2012); seq2seq (2014). Joined Brain after Toronto, lured to OpenAI by Altman/Brockman/Musk over a long courtship in 2015. Quiet, thoughtful, deeply convinced that AGI is achievable and dangerous in roughly equal measure. Played a central role in the November 2023 board crisis (slide 09); left in May 2024 to found <strong>Safe Superintelligence Inc</strong>.</p>
+        </div>
+    </div>
+
+    <div class="person-card">
+        <div class="person-photo">AK</div>
+        <div>
+            <h4>Andrej Karpathy</h4>
+            <div class="role">Founding research scientist 2015&ndash;2017; Tesla AI 2017&ndash;2022; OpenAI 2023&ndash;2024; independent / Eureka Labs from 2024</div>
+            <p>Slovak-Canadian. Stanford PhD with Fei-Fei Li, deeply involved in the Stanford NLP and CV programmes. The most public-facing teacher of any frontier-lab founder &mdash; his minGPT, nanoGPT, the YouTube series <em>Neural Networks: Zero to Hero</em> and the <em>Let's build GPT</em> videos are how a generation has learned the topic. Independent from 2024, building Eureka Labs as an AI-native education startup.</p>
+        </div>
+    </div>
+</section>
+
+<section class="slide" id="slide-02">
+    <div class="slide-number">02</div>
+    <h2>The Charter and the Non-Profit Bet</h2>
+    <p>The original OpenAI Charter (published 2018, revised since) committed the lab to four obligations:</p>
+
+    <ol>
+        <li><strong>Broadly distributed benefits</strong> &mdash; AGI's gains should not concentrate.</li>
+        <li><strong>Long-term safety</strong> &mdash; willing to commit to <em>"stop competing with and start assisting"</em> a value-aligned, safety-conscious project that comes within two years of building AGI before they do.</li>
+        <li><strong>Technical leadership</strong> &mdash; AGI cannot be safely built by anyone if its builders are not at the frontier.</li>
+        <li><strong>Cooperative orientation</strong> &mdash; will publish most research, will collaborate.</li>
+    </ol>
+
+    <p>The third clause is the crux. <strong>You cannot influence AGI safely from the cheap seats; you must be on the field.</strong> That premise &mdash; defensible &mdash; is the seed of every later compromise. Once you commit to staying at the frontier, you commit to the costs of staying there.</p>
+
+    <div class="quote">
+        We worry that any single dominant AGI developer would be able to lock the world into bad outcomes. We are committed to fighting for outcomes that are good for humanity even at our own commercial cost.
+        <span class="attr">&mdash; OpenAI Charter, paraphrased; the document is several paragraphs long and worth reading in full.</span>
+    </div>
+
+    <div class="callout">
+        <div class="callout-label">The structure problem</div>
+        <p>The original entity, OpenAI Inc, was a 501(c)(3) non-profit. The frontier-research budget needed to be in the billions per year by 2020. No 501(c)(3) raises billions per year &mdash; not even Howard Hughes Medical Institute, which is about the largest peer institution. The 2019 reorg into a capped-profit subsidiary was the inevitable consequence.</p>
+    </div>
+</section>
+
+<section class="slide" id="slide-03">
+    <div class="slide-number">03</div>
+    <h2>The 2018 Reorg &mdash; Capped-Profit; Musk Departs</h2>
+    <p>Two changes happened in 2018&ndash;19. <strong>First</strong>, Elon Musk resigned from the board in February 2018. The public reason was conflict of interest with Tesla's growing AI programme; the private reasons (subsequently litigated) involved disagreements about Musk's role. Musk has said publicly that he wanted to take over and run OpenAI directly; the rest of the board declined.</p>
+
+    <p><strong>Second</strong>, in March 2019 OpenAI created <strong>OpenAI LP</strong> (formally OpenAI Global, LLC after a later tweak), a capped-profit subsidiary, and moved most operational research into it. Investors could earn up to 100&times; their investment back; profits beyond that flowed to the non-profit parent. Sam Altman became CEO of the new entity, having served as a board member of the non-profit until then.</p>
+
+    <div class="diagram-grid cols-2">
+        <div class="diagram-panel accent-border">
+            <h4>Why capped-profit (in theory)</h4>
+            <ul>
+                <li>Lets the lab raise commercial capital.</li>
+                <li>Aligns investors with the mission &mdash; a 100&times; cap is enormous in absolute terms but bounded.</li>
+                <li>Keeps ultimate control with the non-profit board.</li>
+                <li>Permits employee equity.</li>
+            </ul>
+        </div>
+        <div class="diagram-panel r">
+            <h4>What it created in practice</h4>
+            <ul>
+                <li>Two boards. The non-profit's controls the for-profit's.</li>
+                <li>Equity-holding employees who became wealthy on paper.</li>
+                <li>An incentive structure increasingly resembling a regular start-up.</li>
+                <li>The conditions for the November 2023 crisis.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="callout y">
+        <div class="callout-label">Musk's later return</div>
+        <p>Musk founded <strong>xAI</strong> in 2023. Has subsequently sued OpenAI multiple times over the deviation from its non-profit charter. The cases are technical and slow-moving; the more interesting fact is that the only major frontier lab Musk does not have an ownership stake in is the one he co-founded. Deck 08 picks up xAI.</p>
+    </div>
+</section>
+
+<section class="slide" id="slide-04">
+    <div class="slide-number">04</div>
+    <h2>The Microsoft Bet ($1 B, 2019)</h2>
+    <p>In July 2019 OpenAI announced a $1 B partnership with <strong>Microsoft</strong>. The structure: Microsoft becomes the exclusive cloud provider; Microsoft makes a multi-year compute commitment; OpenAI commits to commercialise via Azure; Microsoft gets a non-exclusive licence to most OpenAI IP. The cash component was a fraction of the headline; the compute commitment was the bulk.</p>
+
+    <p>The deal was negotiated by Altman and Microsoft CEO Satya Nadella personally. It is the single most important commercial event in OpenAI's history.</p>
+
+    <div class="diagram-grid cols-2">
+        <div class="diagram-panel g">
+            <h4>What Microsoft got</h4>
+            <ul>
+                <li>An exclusive cloud-provider relationship with the leading frontier lab.</li>
+                <li>The right to integrate OpenAI models into all Microsoft products (Copilot was a direct consequence).</li>
+                <li>A non-exclusive perpetual licence to OpenAI IP up to AGI &mdash; with "AGI" defined by the OpenAI board.</li>
+                <li>A 49% economic stake in OpenAI Global LLC over later rounds.</li>
+            </ul>
+        </div>
+        <div class="diagram-panel y">
+            <h4>What OpenAI got</h4>
+            <ul>
+                <li>Effectively unlimited compute &mdash; the only frontier lab with this for ~3 years.</li>
+                <li>Commercial distribution via the largest enterprise software vendor on earth.</li>
+                <li>A strategic partner committed to its survival.</li>
+                <li>An exit from "where do the next $5 B in compute come from?"</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="callout">
+        <div class="callout-label">The AGI clause</div>
+        <p>The Microsoft licence covers everything <em>up to AGI</em>; OpenAI's board determines when AGI has been reached, at which point the licence stops applying to the new system. This clause has not been triggered. It is genuinely ambiguous what would trigger it. Bargaining over its definition is one of the slow-moving structural issues at OpenAI.</p>
+    </div>
+</section>
+
+<section class="slide" id="slide-05">
+    <div class="slide-number">05</div>
+    <h2>GPT-1, GPT-2, GPT-3 &mdash; the Scaling Bet Vindicated</h2>
+    <p>The scaling bet was, technically, the work of <strong>Alec Radford, Ilya Sutskever, Dario Amodei, Tom Brown, Jared Kaplan, Sam McCandlish, Jeff Wu, Mark Chen</strong> and a few others. It runs through three flagship models in three years and one foundational scaling-laws paper.</p>
+
+    <div class="table-wrap">
+    <table>
+        <thead><tr><th>Model</th><th>Date</th><th>Params</th><th>What it showed</th></tr></thead>
+        <tbody>
+            <tr><td>GPT-1</td><td>Jun 2018</td><td>117 M</td><td>Decoder-only transformer + unsupervised pretraining + supervised fine-tuning beats task-specific architectures across NLP benchmarks. Quietly transformational.</td></tr>
+            <tr><td>GPT-2</td><td>Feb 2019</td><td>1.5 B</td><td>The first model good enough for the lab to consider <em>not</em> publishing weights. Coherent paragraph-level generation. Staged release became the template for responsible disclosure.</td></tr>
+            <tr><td>GPT-3</td><td>May 2020</td><td>175 B</td><td><em>In-context learning</em>. Few-shot prompting works. The first model that felt like progress toward general intelligence rather than an NLP system.</td></tr>
+            <tr><td>Scaling Laws (Kaplan)</td><td>Jan 2020</td><td>&mdash;</td><td>Loss decreases as a smooth power law in compute, parameters and data. Formalised the bet.</td></tr>
+        </tbody>
+    </table>
+    </div>
+
+    <div class="quote">
+        We were doing a lot of small things at OpenAI, and Ilya kept saying that we should pick one thing and just scale it up. He was right.
+        <span class="attr">&mdash; A common framing of Sutskever's 2017&ndash;19 internal advocacy. Also reportedly said by several OpenAI researchers in interviews.</span>
+    </div>
+
+    <div class="callout">
+        <div class="callout-label">The internal moment that mattered</div>
+        <p>The pivot to "scale a single decoder-only transformer" was not pre-ordained. Through 2017&ndash;18 OpenAI ran multiple parallel programmes &mdash; robotics (Dactyl), Universe, Dota 2 RL agents, GPT-1. The decision to consolidate compute into the language line is the single most consequential strategic call OpenAI ever made. Sutskever's instinct, Brockman's compute-management, and Altman's fundraising all combined to make it possible.</p>
+    </div>
+</section>
+
+<section class="slide" id="slide-06">
+    <div class="slide-number">06</div>
+    <h2>Codex / Copilot and the Enterprise Pivot</h2>
+    <p>The OpenAI API launched in June 2020 as a private beta with GPT-3. By late 2021 it was publicly available, and the enterprise revenue line that would underpin everything else had begun to grow.</p>
+
+    <p>Two products defined the early commercial era:</p>
+
+    <div class="diagram-grid cols-2">
+        <div class="diagram-panel accent-border">
+            <h4>Codex / GitHub Copilot</h4>
+            <p>August 2021. Codex was OpenAI's GPT model fine-tuned on public GitHub. Microsoft shipped GitHub Copilot on top. It was the first LLM-powered product with material adoption among professional developers. The data and licensing questions it raised &mdash; "is training on public GitHub fair use?" &mdash; will recur for the rest of the decade.</p>
+        </div>
+        <div class="diagram-panel y">
+            <h4>InstructGPT (RLHF)</h4>
+            <p>March 2022, paper Jan 2022. <strong>Long Ouyang, Jeff Wu, Xu Jiang, Diogo Almeida, Carroll Wainwright</strong> et al, plus <strong>Paul Christiano</strong>'s alignment team. The application of <em>RL from human feedback</em> to a base model. This is the technique that made ChatGPT possible nine months later. It is also the single most influential alignment-research-into-product translation in the field.</p>
+        </div>
+    </div>
+
+    <div class="callout y">
+        <div class="callout-label">Why InstructGPT mattered for OpenAI's identity</div>
+        <p>It demonstrated that the alignment-research line and the product line could co-evolve. RLHF was originally an alignment-team idea (Christiano had been writing about it since 2017 at OpenAI). It became the technique that enabled the consumer chat product. After 2022 the alignment / capability boundary at OpenAI is less clear than at Anthropic and considerably less clear than the Charter language might suggest.</p>
+    </div>
+</section>
+
+<section class="slide" id="slide-07">
+    <div class="slide-number">07</div>
+    <h2>ChatGPT &mdash; the Demo That Broke the Internet (30 Nov 2022)</h2>
+    <p>ChatGPT was, internally, framed as a "low-key research preview" of a chat interface on top of a fine-tuned GPT-3.5. The team worked through the Thanksgiving weekend to get it shippable. It went live on Wednesday 30 November 2022. By Saturday it had a million users; by January 2023 it had 100 million, the fastest consumer product ramp in history at that point.</p>
+
+    <p>Several things happened simultaneously inside OpenAI.</p>
+
+    <div class="diagram-grid cols-2">
+        <div class="diagram-panel g">
+            <h4>What changed for the lab</h4>
+            <ul>
+                <li>Revenue went from material to enormous &mdash; ChatGPT Plus launched Feb 2023 at $20/month and exceeded $1 B ARR in months.</li>
+                <li>Headcount tripled in eighteen months.</li>
+                <li>Microsoft made a further $10 B commitment in January 2023.</li>
+                <li>Every other frontier lab abruptly had to compete on shipped product as well as on research.</li>
+            </ul>
+        </div>
+        <div class="diagram-panel r">
+            <h4>What changed for the world</h4>
+            <ul>
+                <li>The phrase <em>generative AI</em> entered general usage.</li>
+                <li>Every company on earth had a board-level AI strategy meeting within 90 days.</li>
+                <li>Anthropic, Google, Meta and DeepMind compressed their own product timelines.</li>
+                <li>Government engagement with AI labs went from cordial to intense.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="callout">
+        <div class="callout-label">A note on what ChatGPT actually was</div>
+        <p>Technically, ChatGPT 1.0 was GPT-3.5-turbo (a distilled chat-tuned variant of the davinci-003 line) wrapped in a simple web UI with conversation history. The model was incremental over what had been on the API for months. <strong>The product was the demo; the demo was what changed the world.</strong> This is a useful pattern to remember &mdash; the moments that change everything are not always the moments where the technology takes its biggest single step.</p>
+    </div>
+</section>
+
+<section class="slide" id="slide-08">
+    <div class="slide-number">08</div>
+    <h2>GPT-4 and the Closing of the Weights</h2>
+    <p>GPT-4 launched on 14 March 2023. It was, by every external measure, a substantial step from GPT-3.5: SAT/Bar/MCAT human-level performance, image input (a few months later), better factual reliability, dramatic gains on reasoning benchmarks.</p>
+
+    <p>It was also the model that closed off the open-publication era at OpenAI. The accompanying technical report explicitly declined to disclose architecture, parameter count, training data composition, or training compute, citing both competitive and safety reasons.</p>
+
+    <div class="quote">
+        Given both the competitive landscape and the safety implications of large-scale models like GPT-4, this report contains no further details about the architecture, hardware, training compute, dataset construction, training method, or similar.
+        <span class="attr">&mdash; GPT-4 Technical Report, 14 March 2023</span>
+    </div>
+
+    <p>By the time of GPT-4-Turbo (Nov 2023), GPT-4o (May 2024) and GPT-4.5 / GPT-5, public technical disclosure had become symbolic at most. The detailed engineering inside the frontier lab had passed irreversibly behind the wall.</p>
+
+    <div class="callout y">
+        <div class="callout-label">A pattern to track</div>
+        <p>The closed-weights stance is consistent across all three of the western frontier labs (OpenAI, Anthropic, Google DeepMind) for their flagship models. It is the central point of difference with Meta (open weights), Mistral (open weights for most checkpoints), and the Chinese frontier labs (open weights for everything except inference-time tuning). The open-vs-closed argument is the central live question of deck 08 and deck 10.</p>
+    </div>
+</section>
+
+<section class="slide" id="slide-09">
+    <div class="slide-number">09</div>
+    <h2>The November 2023 Board Crisis</h2>
+    <p>On Friday 17 November 2023 the OpenAI non-profit board fired Sam Altman as CEO, with the board's announcement saying he had not been <em>"consistently candid"</em> with them. Greg Brockman resigned in solidarity within hours. Mira Murati was named interim CEO. By Monday 20 November Microsoft had announced it was hiring Altman and Brockman to lead a new AI team; over 700 of OpenAI's 770 employees signed an open letter saying they would also leave unless the board resigned and Altman returned. By Wednesday 22 November Altman was reinstated and most of the board had been replaced.</p>
+
+    <p>The five days are well documented; the underlying tensions are partially understood and partially private. What can be said with reasonable confidence:</p>
+
+    <div class="diagram-grid cols-2">
+        <div class="diagram-panel accent-border">
+            <h4>What the board faced</h4>
+            <ul>
+                <li>A capped-profit subsidiary the non-profit board was meant to govern, with billions of dollars in equity-holding employees and a $13 B Microsoft stake economically tied to its decisions.</li>
+                <li>An internal disagreement about pace of capability work versus safety work that had been simmering for at least eighteen months.</li>
+                <li>Concerns &mdash; aired in board meetings &mdash; about the alignment between Altman's communications and his actions on certain matters.</li>
+            </ul>
+        </div>
+        <div class="diagram-panel r">
+            <h4>What broke the play</h4>
+            <ul>
+                <li>The board did not have a credible succession plan.</li>
+                <li>It did not communicate its reasoning publicly.</li>
+                <li>Microsoft and most senior OpenAI staff aligned with Altman within hours.</li>
+                <li>The structural fact that the people doing the work owned equity that the board's action was visibly destroying.</li>
+            </ul>
+        </div>
+    </div>
+
+    <h3>The aftermath, in five bullets</h3>
+    <ul>
+        <li>Altman returned with a refreshed board (Bret Taylor as chair, Larry Summers, Adam D'Angelo retained, others added in 2024).</li>
+        <li>Sutskever publicly supported the board action, then publicly retracted, then went quiet, then left in May 2024 to found <strong>Safe Superintelligence Inc</strong>.</li>
+        <li>Several alignment-team senior members &mdash; <strong>Jan Leike</strong>, <strong>Daniel Kokotajlo</strong>, others &mdash; left for Anthropic or independent work over 2024.</li>
+        <li>Murati became CEO of <strong>Thinking Machines Lab</strong> in 2024. John Schulman moved to Anthropic. Helen Toner, Tasha McCauley and Ilya Sutskever, the three pre-crisis board members most aligned with the firing, all departed within a year.</li>
+        <li>The 2024 board reorganisation is widely understood to have moved meaningful power back from the non-profit board to the operating company.</li>
+    </ul>
+
+    <div class="callout">
+        <div class="callout-label">Why this episode is in the deck</div>
+        <p>The November 2023 crisis is the single clearest demonstration in the field's history of the structural tension OpenAI's hybrid form was always going to produce. A 501(c)(3) board is meant to be able to fire its CEO over mission-fit concerns; in practice, when the operating subsidiary is a $90 B firm with thousands of equity-holding employees, it cannot. The crisis settled the question. The structural debate that produced it is not settled and shows up again in slide 11.</p>
+    </div>
+</section>
+
+<section class="slide" id="slide-10">
+    <div class="slide-number">10</div>
+    <h2>Sora, the o-series, and GPT-5</h2>
+    <p>The post-crisis era at OpenAI has been about two things: <strong>diversifying the product surface</strong> (video, voice, agents, search) and <strong>cracking test-time compute</strong> (the o-series). Both have largely worked.</p>
+
+    <div class="table-wrap">
+    <table>
+        <thead><tr><th>Date</th><th>Launch</th><th>What it added</th></tr></thead>
+        <tbody>
+            <tr><td>Feb 2024</td><td>Sora 1</td><td>Diffusion video, 60-second outputs. Initial limited rollout. Triggers a major industry pivot toward video.</td></tr>
+            <tr><td>May 2024</td><td>GPT-4o ("omni")</td><td>Native multimodality &mdash; speech, vision, text in one model. Halves API price.</td></tr>
+            <tr><td>Sep 2024</td><td>o1-preview</td><td>RL on chains of thought. Test-time compute pays off. Major step on math/coding/science.</td></tr>
+            <tr><td>Dec 2024</td><td>o1 (full) and o3 announcements</td><td>o3 hits human-PhD level on FrontierMath; pricing model becomes "compute per query".</td></tr>
+            <tr><td>Jan 2025</td><td>Operator</td><td>Browser agent. First production GUI-controlling agent from OpenAI; competes with Anthropic's Computer Use.</td></tr>
+            <tr><td>2025&ndash;26</td><td>GPT-5, Sora 2, the o-series continues</td><td>Frontier reasoning + multimodality consolidates.</td></tr>
+        </tbody>
+    </table>
+    </div>
+
+    <h3>The o-series in one paragraph</h3>
+    <p>The o-series applies reinforcement learning to chains of thought. Rather than training the model only to output a final answer, it trains it to spend variable amounts of inference compute thinking through the problem first. The discovery &mdash; reportedly the result of work by <strong>Hyung Won Chung, Lukasz Kaiser, Hunter Lightman, Jakub Pachocki, Noam Brown</strong> and colleagues &mdash; was that this generalised dramatically, particularly on math and reasoning. By the end of 2024 the o-series had become the template every other frontier lab tried to match (Anthropic with the extended-thinking modes, Google with Gemini 2.5 Thinking, DeepSeek with R1).</p>
+
+    <div class="callout y">
+        <div class="callout-label">The first time test-time compute changed pricing</div>
+        <p>Pre-o-series, frontier-lab pricing was per-token. Post-o-series, OpenAI began charging per-query for high-reasoning workloads, with single hard-math queries costing several dollars. This is the first time inference economics meaningfully diverged from a flat token rate, and probably an important precursor to the agent-pricing models of 2026.</p>
+    </div>
+</section>
+
+<section class="slide" id="slide-11">
+    <div class="slide-number">11</div>
+    <h2>The Principals Today</h2>
+
+    <div class="person-card">
+        <div class="person-photo">SA</div>
+        <div>
+            <h4>Sam Altman &mdash; CEO</h4>
+            <div class="role">CEO since 2019; reinstated Nov 2023</div>
+            <p>Visible publicly more than any other frontier-lab principal. Personally invested in numerous adjacent ventures (Worldcoin / World, Helion fusion, Oklo nuclear, others). Appears comfortable with the scale of the responsibility; multiple interviewers describe him as unusually calm under pressure. The 2023 crisis appears, externally, to have strengthened rather than weakened his control.</p>
+        </div>
+    </div>
+
+    <div class="person-card">
+        <div class="person-photo">GB</div>
+        <div>
+            <h4>Greg Brockman &mdash; President</h4>
+            <div class="role">President; back from sabbatical 2024</div>
+            <p>Returned in late 2024. Continues to be the most engineering-heavy of the founders; runs much of the day-to-day infrastructure and training-run management.</p>
+        </div>
+    </div>
+
+    <div class="person-card">
+        <div class="person-photo">IS</div>
+        <div>
+            <h4>Ilya Sutskever &mdash; founded Safe Superintelligence Inc (2024)</h4>
+            <div class="role">No longer at OpenAI</div>
+            <p>Left in May 2024. SSI is small, has raised over $1 B in known rounds, and is explicitly mission-focused on safety. Sutskever's public statements since the departure have been minimal &mdash; a deliberate retreat from public discourse that contrasts sharply with Altman's posture.</p>
+        </div>
+    </div>
+
+    <div class="person-card">
+        <div class="person-photo">MM</div>
+        <div>
+            <h4>Mira Murati &mdash; founded Thinking Machines Lab (2024)</h4>
+            <div class="role">No longer at OpenAI; was CTO 2022&ndash;2024</div>
+            <p>Albanian-Canadian. Engineering manager at Tesla, then OpenAI from 2018. CTO during the ChatGPT release and the Sora preview. Briefly interim CEO during the November 2023 weekend. Left in late 2024 to start Thinking Machines Lab; raised one of the largest seed rounds in tech history.</p>
+        </div>
+    </div>
+
+    <div class="person-card">
+        <div class="person-photo">JS</div>
+        <div>
+            <h4>Jakub Pachocki &mdash; Chief Scientist</h4>
+            <div class="role">Chief Scientist since May 2024</div>
+            <p>Polish. Theoretical computer scientist (Carnegie Mellon PhD), joined OpenAI in 2017. Took over the Chief Scientist role on Sutskever's departure. Heavily associated with the o-series technical leadership.</p>
+        </div>
+    </div>
+
+    <div class="person-card">
+        <div class="person-photo">SW</div>
+        <div>
+            <h4>Sarah Friar &mdash; CFO; Brad Lightcap &mdash; COO</h4>
+            <div class="role">Senior leadership team 2024&ndash;</div>
+            <p>The non-research-side senior team that has taken on increased responsibility post-crisis. Friar (ex-Square, ex-Block) brings public-company financial experience; Lightcap has been at OpenAI from the early days and runs much of the operations.</p>
+        </div>
+    </div>
+
+    <div class="callout y">
+        <div class="callout-label">The diaspora</div>
+        <p>OpenAI alumni in 2026 include the founders of Anthropic, SSI, Thinking Machines Lab, xAI's senior research staff, Inflection's founders, the senior research at Pi/Physical Intelligence, parts of Cohere, and substantial fractions of the senior staff at Google DeepMind and Meta AI. There has never been a single research organisation in computer-science history whose alumni have founded so many other significant organisations within a single decade.</p>
+    </div>
+</section>
+
+<section class="slide" id="slide-12">
+    <div class="slide-number">12</div>
+    <h2>Cheat Sheet</h2>
+
+    <div class="diagram-grid cols-2">
+        <div class="diagram-panel accent-border">
+            <h4>Five turning points</h4>
+            <ul>
+                <li><strong>Dec 2015</strong> &mdash; founded as a non-profit.</li>
+                <li><strong>Mar 2019</strong> &mdash; capped-profit reorg; Microsoft $1 B.</li>
+                <li><strong>May 2020</strong> &mdash; GPT-3 launches.</li>
+                <li><strong>Nov 2022</strong> &mdash; ChatGPT.</li>
+                <li><strong>Nov 2023</strong> &mdash; the board crisis.</li>
+            </ul>
+        </div>
+        <div class="diagram-panel y">
+            <h4>The principals</h4>
+            <ul>
+                <li>Altman &mdash; CEO.</li>
+                <li>Brockman &mdash; President.</li>
+                <li>Sutskever &mdash; left to found SSI.</li>
+                <li>Murati &mdash; left to found Thinking Machines.</li>
+                <li>Karpathy &mdash; left to build Eureka Labs.</li>
+                <li>Pachocki &mdash; current Chief Scientist.</li>
+            </ul>
+        </div>
+        <div class="diagram-panel g">
+            <h4>The technology bets</h4>
+            <ul>
+                <li>Decoder-only at scale (GPT-3).</li>
+                <li>RLHF (InstructGPT &rarr; ChatGPT).</li>
+                <li>Multimodality (GPT-4o, Sora).</li>
+                <li>Test-time compute (the o-series).</li>
+                <li>Agents (Operator, GPT-5 agentic mode).</li>
+            </ul>
+        </div>
+        <div class="diagram-panel r">
+            <h4>What's next in the series</h4>
+            <ul>
+                <li>06 &mdash; Anthropic. The other side of the OpenAI alignment debate, run as its own lab.</li>
+                <li>07 &mdash; Google DeepMind, the lab that published the transformer but never quite shipped the product.</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<footer class="footer">
+    <p>Part of the <a href="https://github.com/BrendanJamesLynskey/LLM_Hub_LLM_History">LLM History series</a> in the <a href="https://github.com/BrendanJamesLynskey/LLMs">LLMs hub</a>.</p>
+    <p style="margin-top: 0.5rem;"><a href="https://brendanjameslynskey.github.io/LLM_History_04_University_Labs/">&larr; 04 University Labs</a> &middot; <a href="https://brendanjameslynskey.github.io/LLM_History_06_Anthropic/">06 Anthropic &rarr;</a></p>
+</footer>
+
+</body>
+</html>
