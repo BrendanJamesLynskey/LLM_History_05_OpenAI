@@ -174,7 +174,7 @@
         <div class="person-photo">GB</div>
         <div>
             <h4>Greg Brockman</h4>
-            <div class="role">President; was CTO 2015&ndash;2024</div>
+            <div class="role">President since 2022; was CTO 2015&ndash;2022</div>
             <p>Harvard / MIT dropout. Stripe's first-employee CTO. The hands-on engineering lead at OpenAI for most of its history &mdash; the person actually shipping infrastructure, training runs and demos. Took an extended sabbatical in 2024 and returned. Often the most visible technical voice from the lab.</p>
         </div>
     </div>
@@ -253,7 +253,7 @@
 
     <div class="callout y">
         <div class="callout-label">Musk's later return</div>
-        <p>Musk founded <strong>xAI</strong> in 2023. Has subsequently sued OpenAI multiple times over the deviation from its non-profit charter. The cases are technical and slow-moving; the more interesting fact is that the only major frontier lab Musk does not have an ownership stake in is the one he co-founded. Deck 08 picks up xAI.</p>
+        <p>Musk founded <strong>xAI</strong> in 2023. Has subsequently sued OpenAI multiple times over the deviation from its non-profit charter. In May 2026 a federal jury rejected his claims against OpenAI, Altman and Brockman as time-barred; Musk has said he will appeal. The more interesting fact is that the only major frontier lab Musk does not have an ownership stake in is the one he co-founded. Deck 08 picks up xAI.</p>
     </div>
 </section>
 
@@ -287,7 +287,7 @@
 
     <div class="callout">
         <div class="callout-label">The AGI clause</div>
-        <p>The Microsoft licence covers everything <em>up to AGI</em>; OpenAI's board determines when AGI has been reached, at which point the licence stops applying to the new system. This clause has not been triggered. It is genuinely ambiguous what would trigger it. Bargaining over its definition is one of the slow-moving structural issues at OpenAI.</p>
+        <p>The Microsoft licence covers everything <em>up to AGI</em>; under the 2019 terms OpenAI's board determined when AGI had been reached, at which point the licence stopped applying to the new system. The clause was never triggered. The October 2025 restructuring made any AGI declaration subject to verification by an independent expert panel, and the April 2026 amendment made Microsoft's revenue share continue through 2030 &ldquo;independent of OpenAI's technology progress&rdquo; and its licence (through 2032) non-exclusive &mdash; in effect retiring the clause.</p>
     </div>
 </section>
 
@@ -309,8 +309,8 @@
     </div>
 
     <div class="quote">
-        We were doing a lot of small things at OpenAI, and Ilya kept saying that we should pick one thing and just scale it up. He was right.
-        <span class="attr">&mdash; A common framing of Sutskever's 2017&ndash;19 internal advocacy. Also reportedly said by several OpenAI researchers in interviews.</span>
+        Sutskever is commonly described as having argued, internally, that the lab should stop doing many small things, pick one and scale it up.
+        <span class="attr">&mdash; A paraphrase of accounts of Sutskever's 2017&ndash;19 internal advocacy, not a verbatim quote.</span>
     </div>
 
     <div class="callout">
@@ -333,7 +333,7 @@
         </div>
         <div class="diagram-panel y">
             <h4>InstructGPT (RLHF)</h4>
-            <p>March 2022, paper Jan 2022. <strong>Long Ouyang, Jeff Wu, Xu Jiang, Diogo Almeida, Carroll Wainwright</strong> et al, plus <strong>Paul Christiano</strong>'s alignment team. The application of <em>RL from human feedback</em> to a base model. This is the technique that made ChatGPT possible nine months later. It is also the single most influential alignment-research-into-product translation in the field.</p>
+            <p>January 2022 (deployed in the API), paper March 2022. <strong>Long Ouyang, Jeff Wu, Xu Jiang, Diogo Almeida, Carroll Wainwright</strong> et al, plus <strong>Paul Christiano</strong>'s alignment team. The application of <em>RL from human feedback</em> to a base model. This is the technique that made ChatGPT possible nine months later. It is also the single most influential alignment-research-into-product translation in the field.</p>
         </div>
     </div>
 
@@ -346,7 +346,7 @@
 <section class="slide" id="slide-07">
     <div class="slide-number">07</div>
     <h2>ChatGPT &mdash; the Demo That Broke the Internet (30 Nov 2022)</h2>
-    <p>ChatGPT was, internally, framed as a "low-key research preview" of a chat interface on top of a fine-tuned GPT-3.5. The team worked through the Thanksgiving weekend to get it shippable. It went live on Wednesday 30 November 2022. By Saturday it had a million users; by January 2023 it had 100 million, the fastest consumer product ramp in history at that point.</p>
+    <p>ChatGPT was, internally, framed as a "low-key research preview" of a chat interface on top of a fine-tuned GPT-3.5. The team worked through the Thanksgiving weekend to get it shippable. It went live on Wednesday 30 November 2022. By the following Monday it had a million users; by January 2023 it had 100 million, the fastest consumer product ramp in history at that point.</p>
 
     <p>Several things happened simultaneously inside OpenAI.</p>
 
@@ -373,19 +373,19 @@
 
     <div class="callout">
         <div class="callout-label">A note on what ChatGPT actually was</div>
-        <p>Technically, ChatGPT 1.0 was GPT-3.5-turbo (a distilled chat-tuned variant of the davinci-003 line) wrapped in a simple web UI with conversation history. The model was incremental over what had been on the API for months. <strong>The product was the demo; the demo was what changed the world.</strong> This is a useful pattern to remember &mdash; the moments that change everything are not always the moments where the technology takes its biggest single step.</p>
+        <p>Technically, ChatGPT 1.0 was a chat-tuned model fine-tuned from the GPT-3.5 series, wrapped in a simple web UI with conversation history. The model was incremental over what had been on the API for months. <strong>The product was the demo; the demo was what changed the world.</strong> This is a useful pattern to remember &mdash; the moments that change everything are not always the moments where the technology takes its biggest single step.</p>
     </div>
 </section>
 
 <section class="slide" id="slide-08">
     <div class="slide-number">08</div>
     <h2>GPT-4 and the Closing of the Weights</h2>
-    <p>GPT-4 launched on 14 March 2023. It was, by every external measure, a substantial step from GPT-3.5: SAT/Bar/MCAT human-level performance, image input (a few months later), better factual reliability, dramatic gains on reasoning benchmarks.</p>
+    <p>GPT-4 launched on 14 March 2023. It was, by every external measure, a substantial step from GPT-3.5: SAT/Bar/LSAT human-level performance, image input (a few months later), better factual reliability, dramatic gains on reasoning benchmarks.</p>
 
     <p>It was also the model that closed off the open-publication era at OpenAI. The accompanying technical report explicitly declined to disclose architecture, parameter count, training data composition, or training compute, citing both competitive and safety reasons.</p>
 
     <div class="quote">
-        Given both the competitive landscape and the safety implications of large-scale models like GPT-4, this report contains no further details about the architecture, hardware, training compute, dataset construction, training method, or similar.
+        Given both the competitive landscape and the safety implications of large-scale models like GPT-4, this report contains no further details about the architecture (including model size), hardware, training compute, dataset construction, training method, or similar.
         <span class="attr">&mdash; GPT-4 Technical Report, 14 March 2023</span>
     </div>
 
@@ -428,14 +428,14 @@
     <ul>
         <li>Altman returned with a refreshed board (Bret Taylor as chair, Larry Summers, Adam D'Angelo retained, others added in 2024).</li>
         <li>Sutskever publicly supported the board action, then publicly retracted, then went quiet, then left in May 2024 to found <strong>Safe Superintelligence Inc</strong>.</li>
-        <li>Several alignment-team senior members &mdash; <strong>Jan Leike</strong>, <strong>Daniel Kokotajlo</strong>, others &mdash; left for Anthropic or independent work over 2024.</li>
+        <li>Several safety-focused researchers &mdash; <strong>Jan Leike</strong>, <strong>Daniel Kokotajlo</strong>, others &mdash; left for Anthropic or independent work over 2024.</li>
         <li>Murati left in September 2024 and launched <strong>Thinking Machines Lab</strong> as CEO in February 2025. John Schulman moved to Anthropic in August 2024, then joined Thinking Machines in February 2025. Helen Toner, Tasha McCauley and Ilya Sutskever, the three pre-crisis board members most aligned with the firing, all departed within a year.</li>
         <li>The 2024 board reorganisation is widely understood to have moved meaningful power back from the non-profit board to the operating company.</li>
     </ul>
 
     <div class="callout">
         <div class="callout-label">Why this episode is in the deck</div>
-        <p>The November 2023 crisis is the single clearest demonstration in the field's history of the structural tension OpenAI's hybrid form was always going to produce. A 501(c)(3) board is meant to be able to fire its CEO over mission-fit concerns; in practice, when the operating subsidiary is a $90 B firm with thousands of equity-holding employees, it cannot. The crisis settled the question. The structural debate that produced it is not settled and shows up again in slide 11.</p>
+        <p>The November 2023 crisis is the single clearest demonstration in the field's history of the structural tension OpenAI's hybrid form was always going to produce. A 501(c)(3) board is meant to be able to fire its CEO over mission-fit concerns; in practice, when the operating subsidiary is a $90 B firm with hundreds of equity-holding employees, it cannot. The crisis settled the question. The structural debate that produced it ran on until October 2025, when OpenAI recapitalised: the non-profit became the OpenAI Foundation, which controls a for-profit public benefit corporation, OpenAI Group PBC.</p>
     </div>
 </section>
 
@@ -451,7 +451,7 @@
             <tr><td>Feb 2024</td><td>Sora 1</td><td>Diffusion video, 60-second outputs. Initial limited rollout. Triggers a major industry pivot toward video.</td></tr>
             <tr><td>May 2024</td><td>GPT-4o ("omni")</td><td>Native multimodality &mdash; speech, vision, text in one model. Halves API price.</td></tr>
             <tr><td>Sep 2024</td><td>o1-preview</td><td>RL on chains of thought. Test-time compute pays off. Major step on math/coding/science.</td></tr>
-            <tr><td>Dec 2024</td><td>o1 (full) and o3 announcements</td><td>o3 hits human-PhD level on FrontierMath; pricing model becomes "compute per query".</td></tr>
+            <tr><td>Dec 2024</td><td>o1 (full) and o3 announcements</td><td>o3 solves 25.2% of FrontierMath problems (no prior model exceeded 2%).</td></tr>
             <tr><td>Jan 2025</td><td>Operator</td><td>Browser agent. First production GUI-controlling agent from OpenAI; competes with Anthropic's Computer Use.</td></tr>
             <tr><td>2025&ndash;26</td><td>GPT-5, Sora 2, the o-series continues</td><td>Frontier reasoning + multimodality consolidates.</td></tr>
         </tbody>
@@ -463,7 +463,7 @@
 
     <div class="callout y">
         <div class="callout-label">The first time test-time compute changed pricing</div>
-        <p>Pre-o-series, frontier-lab pricing was per-token. Post-o-series, OpenAI began charging per-query for high-reasoning workloads, with single hard-math queries costing several dollars. This is the first time inference economics meaningfully diverged from a flat token rate, and probably an important precursor to the agent-pricing models of 2026.</p>
+        <p>Pricing stayed per-token, but post-o-series the hidden reasoning tokens are billed as output tokens, so the cost of a query now depends on how long the model thinks, and single hard-math queries can cost several dollars. This is the first time inference economics meaningfully diverged from the visible output length, and probably an important precursor to the agent-pricing models of 2026.</p>
     </div>
 </section>
 
@@ -501,9 +501,9 @@
     <div class="person-card">
         <div class="person-photo">MM</div>
         <div>
-            <h4>Mira Murati &mdash; founded Thinking Machines Lab (2024)</h4>
+            <h4>Mira Murati &mdash; founded Thinking Machines Lab (2025)</h4>
             <div class="role">No longer at OpenAI; was CTO 2022&ndash;2024</div>
-            <p>Albanian-Canadian. Engineering manager at Tesla, then OpenAI from 2018. CTO during the ChatGPT release and the Sora preview. Briefly interim CEO during the November 2023 weekend. Left in late 2024 to start Thinking Machines Lab; raised one of the largest seed rounds in tech history.</p>
+            <p>Albanian-American. Product manager at Tesla, then OpenAI from 2018. CTO during the ChatGPT release and the Sora preview. Briefly interim CEO during the November 2023 weekend. Left in late 2024 to start Thinking Machines Lab; raised one of the largest seed rounds in tech history.</p>
         </div>
     </div>
 
@@ -521,13 +521,13 @@
         <div>
             <h4>Sarah Friar &mdash; CFO; Brad Lightcap &mdash; COO</h4>
             <div class="role">Senior leadership team 2024&ndash;</div>
-            <p>The non-research-side senior team that has taken on increased responsibility post-crisis. Friar (ex-Square, ex-Block) brings public-company financial experience; Lightcap has been at OpenAI from the early days and runs much of the operations.</p>
+            <p>The non-research-side senior team that has taken on increased responsibility post-crisis. Friar (ex-Square CFO, ex-Nextdoor CEO) brings public-company financial experience; Lightcap has been at OpenAI from the early days and runs much of the operations.</p>
         </div>
     </div>
 
     <div class="callout y">
         <div class="callout-label">The diaspora</div>
-        <p>OpenAI alumni in 2026 include the founders of Anthropic, SSI, Thinking Machines Lab, xAI's senior research staff, Inflection's founders, the senior research at Pi/Physical Intelligence, parts of Cohere, and substantial fractions of the senior staff at Google DeepMind and Meta AI. There has never been a single research organisation in computer-science history whose alumni have founded so many other significant organisations within a single decade.</p>
+        <p>OpenAI alumni in 2026 include the founders of Anthropic, SSI, Thinking Machines Lab, xAI's senior research staff, the senior research at Pi/Physical Intelligence, parts of Cohere, and substantial fractions of the senior staff at Google DeepMind and Meta AI. There has never been a single research organisation in computer-science history whose alumni have founded so many other significant organisations within a single decade.</p>
     </div>
 </section>
 
@@ -540,7 +540,7 @@
             <h4>Five turning points</h4>
             <ul>
                 <li><strong>Dec 2015</strong> &mdash; founded as a non-profit.</li>
-                <li><strong>Mar 2019</strong> &mdash; capped-profit reorg; Microsoft $1 B.</li>
+                <li><strong>2019</strong> &mdash; capped-profit reorg (Mar); Microsoft $1 B (Jul).</li>
                 <li><strong>May 2020</strong> &mdash; GPT-3 launches.</li>
                 <li><strong>Nov 2022</strong> &mdash; ChatGPT.</li>
                 <li><strong>Nov 2023</strong> &mdash; the board crisis.</li>
